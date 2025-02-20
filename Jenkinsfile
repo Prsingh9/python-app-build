@@ -25,6 +25,7 @@ pipeline {
             steps {
                 // Install dependencies inside the virtual environment
                 sh 'venv/bin/pip install -r requirements.txt'
+                sh 'pip install setuptools'
             }
         }
 
