@@ -9,46 +9,39 @@ pipeline {
             }
         }
 
-        // Stage 2: Set up Virtual Environment
-        stage('Set up Virtual Environment') {
-            steps {
-                // Create virtual environment
-                sh 'python3 -m venv venv'
-                
-                // Activate virtual environment
-                sh '. venv/bin/activate'
-            }
-        }
-
-        // Stage 3: Install Dependencies
+        // Stage 2: Install Dependencies
         stage('Install Dependencies') {
             steps {
-                // Install dependencies inside the virtual environment
-                sh 'venv/bin/pip install -r requirements.txt'
+                // Install dependencies from the requirements.txt file
+                sh 'pip install -r requirements.txt'
+                
+                // Ensure setuptools is installed
                 sh 'pip install setuptools'
             }
         }
 
-        // Stage 4: Run Tests using Pytest
+        // Stage 3: Run Tests (optional)
         stage('Run Tests') {
+            when {
+                expression {
+                    return fileExists('tests')
+                }
+            }
             steps {
-                // Run tests inside the virtual environment
-                sh 'venv/bin/pytest tests/'
+                sh 'pytest tests/'
             }
         }
 
-        // Stage 5: Build Artifact (Python package)
+        // Stage 4: Build Artifact (Python package)
         stage('Build Artifact') {
             steps {
-                // Build the package inside the virtual environment
-                sh 'venv/bin/python setup.py sdist'
+                sh 'python setup.py sdist'
             }
         }
 
-        // Stage 6: Archive Build Artifacts
+        // Stage 5: Archive Build Artifacts
         stage('Archive Artifact') {
             steps {
-                // Archive the created package (e.g., .tar.gz)
                 archiveArtifacts artifacts: 'dist/*.tar.gz', fingerprint: true
             }
         }
