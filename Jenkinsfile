@@ -5,8 +5,8 @@ pipeline {
         // Stage 1: Clone Repository from GitHub
         stage('Clone Repository') {
             steps {
-                // Replace with your actual GitHub repo URL
-                git url:'https://github.com/Prsingh9/python-app-build.git',branch:'main
+                // Corrected the syntax: added closing quotation mark for branch
+                git url: 'https://github.com/Prsingh9/python-app-build.git', branch: 'main'
             }
         }
 
