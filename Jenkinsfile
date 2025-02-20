@@ -6,7 +6,7 @@ pipeline {
         stage('Clone Repository') {
             steps {
                 // Replace with your actual GitHub repo URL
-                git url:'https://github.com/Prsingh9/python-app-build.git',branch:'master'
+                git url:'https://github.com/Prsingh9/python-app-build.git',branch:'main
             }
         }
 
