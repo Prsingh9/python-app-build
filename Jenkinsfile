@@ -9,14 +9,17 @@ pipeline {
             }
         }
 
-        // Stage 2: Install Dependencies
+        // Stage 2: Create Virtual Environment and Install Dependencies
         stage('Install Dependencies') {
             steps {
-                // Install dependencies from the requirements.txt file
-                sh 'pip install -r requirements.txt'
+                // Create a virtual environment
+                sh 'python3 -m venv venv'
                 
-                // Ensure setuptools is installed
-                sh 'pip install setuptools'
+                // Install dependencies inside the virtual environment
+                sh './venv/bin/pip install -r requirements.txt'
+                
+                // Ensure setuptools is installed in the virtual environment
+                sh './venv/bin/pip install setuptools'
             }
         }
 
@@ -28,20 +31,26 @@ pipeline {
                 }
             }
             steps {
-                sh 'pytest tests/'
+                // Run tests inside the virtual environment
+                sh './venv/bin/pytest tests/'
             }
         }
 
         // Stage 4: Build Artifact (Python package)
         stage('Build Artifact') {
             steps {
-                sh 'python setup.py sdist'
+                // Make sure setuptools is explicitly used before building
+                sh './venv/bin/pip install setuptools'
+                
+                // Build the Python package using setup.py
+                sh './venv/bin/python setup.py sdist'
             }
         }
 
         // Stage 5: Archive Build Artifacts
         stage('Archive Artifact') {
             steps {
+                // Archive the generated artifact (e.g., .tar.gz)
                 archiveArtifacts artifacts: 'dist/*.tar.gz', fingerprint: true
             }
         }
